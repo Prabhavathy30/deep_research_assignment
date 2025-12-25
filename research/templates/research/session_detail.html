@@ -1,0 +1,41 @@
+<h1>Session: {{ session.question }}</h1>
+<p>Status: {{ session.status }}</p>
+
+{% if session.trace_id %}
+<p>Trace ID: {{ session.trace_id }}</p>
+<a href="https://app.langsmith.com/traces/{{ session.trace_id }}" target="_blank">View Trace in LangSmith</a>
+{% endif %}
+
+
+{% if cost %}
+<p>Total Tokens: {{ cost.total_tokens }}</p>
+<p>Total Cost: ${{ cost.total_cost_usd }}</p>
+{% endif %}
+
+<h2>Research Steps</h2>
+<ul>
+{% for step in steps %}
+  <li>{{ step.step_name }} → {{ step.output }}</li>
+{% endfor %}
+</ul>
+
+<h2>Uploaded Documents</h2>
+<ul>
+{% for doc in documents %}
+  <li><a href="{{ doc.file.url }}">{{ doc.file.name }}</a></li>
+{% endfor %}
+</ul>
+
+<h2>Upload New Document</h2>
+<form method="post" enctype="multipart/form-data" action="{% url 'upload_document' session.id %}">
+  {% csrf_token %}
+  <input type="file" name="file">
+  <button type="submit">Upload</button>
+</form>
+
+<h2>Continue Research</h2>
+<form method="post" action="{% url 'continue_research' session.id %}">
+  {% csrf_token %}
+  <input type="text" name="query" placeholder="New query">
+  <button type="submit">Continue Research</button>
+</form>

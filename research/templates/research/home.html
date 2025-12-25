@@ -1,0 +1,18 @@
+<h1>Deep Research Sessions</h1>
+
+<form method="post">
+  {% csrf_token %}
+  <input type="text" name="question" placeholder="Enter research query">
+  <button type="submit">Start Research</button>
+</form>
+
+<h2>All Sessions</h2>
+<ul>
+{% for session in sessions %}
+  <li>
+    <a href="{% url 'session-detail' session.id %}">
+      {{ session.question }} - {{ session.status }}
+    </a>
+  </li>
+{% endfor %}
+</ul>
